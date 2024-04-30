@@ -42,9 +42,9 @@
         let hit2 = false;
         let birdPos = [700, 200];
         let jump = 0;
-        let WING; // Define WING variable
+        let WING; 
         let gamerun = false; // Variable to control the game initialization
-        let lives = 3;
+        let lives = 3; //LIFE
         let score = 0; // Variable to keep track of the score
         let playAgainButton;
         let bestScore = 0; // Variable to store the best score
@@ -54,12 +54,12 @@
             TOP_PIPE = loadImage("flappipe2.png");
             BOTTOM_PIPE = loadImage("flappipe1.png");
             BIRD = loadImage("bird.png");
-            WING = loadSound("wing.mp3"); // Define WING as a loaded sound
+            WING = loadSound("wing.mp3"); 
             logo = loadImage("logo.png");
             start = loadImage("start.png");
             LIVES = loadImage("lives.png");
             BROKE = loadImage("broke.png");
-            DIE = loadSound("die.mp3"); // Load the "DIE" sound
+            DIE = loadSound("die.mp3"); 
             OVER= loadImage("over.png");
         }
 
@@ -74,7 +74,7 @@
             background(BACKGROUND, 255);
             frameRate(60);
 
-            // Retrieve the best score from localStorage, if available
+            // getthe best score from localStorage, if available
             if (localStorage.getItem('bestScore')) {
                 bestScore = parseInt(localStorage.getItem('bestScore'));
             }
@@ -83,7 +83,10 @@
             });
         }
 
-
+        //spawning and movement of pipes.
+        //add to the pipes array at regular intervals.
+        // pipe's position is updated to move from right to left across the screen.
+        //move off-screen are removed from the array.
         function pipe_spawn() {
             if (frameCount % inte === 0) {
                 pipes.push([w, random(h / 5, h - h / 5), false]); // Add a boolean to track if the bird has passed the pipe
@@ -100,11 +103,12 @@
                 image(BOTTOM_PIPE, pipes[i][0] - w / 24, pipes[i][1] + h / 8, w / 15, h - (pipes[i][1] / 5));
             }
         }
-
+        //Checks for collisions between the bird and pipes.
         function collision() {
             for (let i = 0; i < pipes.length; i++) {
                 hit1 = collideRectCircle(pipes[i][0] - w / 24, 0, w / 15, pipes[i][1] - (h / 4.8), birdPos[0], birdPos[1], 30);
                 hit2 = collideRectCircle(pipes[i][0] - w / 24, pipes[i][1] + h / 12, w / 15, h - (pipes[i][1] / 5), birdPos[0], birdPos[1], 30);
+                //Decrements lives and says game over if the bird collides with a pipe.
                 if (hit1 || hit2) {
                     console.log("Collision occurred!");
                     lives--; // Decrement lives
@@ -114,6 +118,7 @@
                         DIE.play();
                     }
                     return;
+                    //Updates the score if the bird successfully passes through a pipe.
                 } else if (pipes[i][0] < birdPos[0] && !pipes[i][2]) { // Check if the bird passed a pipe
                     pipes[i][2] = true; // Mark the pipe as passed
                     score++; // Increment the score
@@ -133,6 +138,7 @@
             if (jump > -20) {
                 jump -= 1;
             }
+            //bird stays within the bounds of the canvas and triggers game over if it goes out of bounds.
             birdPos[1] -= jump;
             if (birdPos[1] < 0) { // If bird goes above the screen
                 birdPos[1] = 0; // Set bird position to the top of the screen
